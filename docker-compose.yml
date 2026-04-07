@@ -1,0 +1,37 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: hotelease_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - hotelease_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: hotelease_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/hotelease
+      - JWT_SECRET=supersecretkey123
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: 
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:5000
+    container_name: hotelease_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  hotelease_data:
