@@ -33,7 +33,7 @@ const getRoomById = async (req, res) => {
 // @route   POST /api/rooms
 // @access  Private/Admin
 const createRoom = async (req, res) => {
-  const { name, price, type, description, images } = req.body;
+  const { name, price, type, description, location, amenities, capacity, bedType, images } = req.body;
 
   try {
     const room = new Room({
@@ -41,13 +41,18 @@ const createRoom = async (req, res) => {
       price,
       type,
       description,
+      location,
+      amenities,
+      capacity,
+      bedType,
       images,
     });
 
     const createdRoom = await room.save();
     res.status(201).json(createdRoom);
   } catch (error) {
-    res.status(400).json({ message: 'Invalid room data' });
+    console.error('Create room error:', error);
+    res.status(400).json({ message: 'Invalid room data', error: error.message });
   }
 };
 
@@ -55,7 +60,7 @@ const createRoom = async (req, res) => {
 // @route   PUT /api/rooms/:id
 // @access  Private/Admin
 const updateRoom = async (req, res) => {
-  const { name, price, type, description, images, status } = req.body;
+  const { name, price, type, description, location, amenities, capacity, bedType, images, status } = req.body;
 
   try {
     const room = await Room.findById(req.params.id);
@@ -65,6 +70,10 @@ const updateRoom = async (req, res) => {
       room.price = price || room.price;
       room.type = type || room.type;
       room.description = description || room.description;
+      room.location = location || room.location;
+      room.amenities = amenities || room.amenities;
+      room.capacity = capacity || room.capacity;
+      room.bedType = bedType || room.bedType;
       room.images = images || room.images;
       room.status = status || room.status;
 
@@ -74,7 +83,8 @@ const updateRoom = async (req, res) => {
       res.status(404).json({ message: 'Room not found' });
     }
   } catch (error) {
-    res.status(400).json({ message: 'Invalid room data' });
+    console.error('Update room error:', error);
+    res.status(400).json({ message: 'Invalid room data', error: error.message });
   }
 };
 
