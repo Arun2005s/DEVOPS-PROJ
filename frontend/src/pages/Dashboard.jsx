@@ -277,7 +277,7 @@ const BookingTable = ({ data, user }) => (
                </div>
             </td>
             <td className="px-12 py-10">
-               <div className="text-3xl font-black text-slate-900 tracking-tighter"><span className="text-base mr-0.5">$</span>{booking.totalAmount}</div>
+               <div className="text-3xl font-black text-slate-900 tracking-tighter"><span className="text-base mr-0.5">₹</span>{booking.totalAmount}</div>
             </td>
             <td className="px-12 py-10">
                <StatusBadge status={booking.status} />
@@ -325,7 +325,7 @@ const RoomTable = ({ data, onDelete }) => (
                </div>
             </td>
             <td className="px-12 py-10">
-               <div className="text-3xl font-black text-slate-900 tracking-tighter"><span className="text-base mr-0.5">$</span>{room.price}</div>
+               <div className="text-3xl font-black text-slate-900 tracking-tighter"><span className="text-base mr-0.5">₹</span>{room.price}</div>
                <span className="text-slate-400 font-bold uppercase tracking-widest text-[9px]">Rate Per Night</span>
             </td>
             <td className="px-12 py-10">

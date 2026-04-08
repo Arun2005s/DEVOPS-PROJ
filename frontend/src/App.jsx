@@ -8,6 +8,8 @@ import Booking from './pages/Booking';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Gallery from './pages/Gallery';
+import Contact from './pages/Contact';
 import AuthRoute from './components/AuthRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -33,10 +35,12 @@ function App() {
                   <Dashboard />
                 </AuthRoute>
               } />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/contact" element={<Contact />} />
             </Routes>
           </main>
-          <footer className="bg-gray-800 text-white py-6 text-center">
-            <p>&copy; 2026 HotelEase. All rights reserved.</p>
+          <footer className="bg-slate-900 text-slate-500 py-12 text-center border-t border-white/5">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em]">&copy; 2026 HotelEase Intelligence. All rights reserved.</p>
           </footer>
         </div>
       </AuthProvider>

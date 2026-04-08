@@ -190,7 +190,7 @@ const RoomCard = ({ room }) => (
         <div>
            <span className="text-slate-400 font-black uppercase tracking-widest text-[9px] block mb-1">Standard Valuation</span>
            <div className="text-5xl font-black text-slate-900 tracking-tighter">
-             <span className="text-2xl mr-0.5">$</span>{room.price}
+             <span className="text-xl">₹</span>{room.price}
            </div>
         </div>
         <Link 

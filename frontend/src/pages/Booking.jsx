@@ -127,7 +127,7 @@ const Booking = () => {
                      </div>
                      <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2.5rem] text-center min-w-[12rem]">
                         <span className="block text-[10px] font-black uppercase tracking-widest mb-2 opacity-60">Valuation / Night</span>
-                        <div className="text-5xl font-black tracking-tighter">${room.price}</div>
+                        <div className="text-4xl lg:text-5xl font-black tracking-tighter">₹{room.price}</div>
                      </div>
                   </div>
                </div>
@@ -141,19 +141,19 @@ const Booking = () => {
                            "{room.description}"
                         </p>
                      </div>
-                     <div className="lg:w-1/3 bg-slate-900 p-10 rounded-[3rem] text-white shadow-xl flex flex-col justify-center">
-                        <div className="flex items-center gap-4 mb-6">
-                           <div className="p-3 bg-primary-600 rounded-2xl"><Users size={24} /></div>
-                           <div>
-                              <div className="text-[10px] font-black uppercase tracking-widest opacity-60">Guest Protocol</div>
-                              <div className="text-xl font-black uppercase text-primary-400">{room.capacity} Maximum</div>
+                     <div className="lg:w-1/3 bg-slate-900 p-8 lg:p-10 rounded-[3rem] text-white shadow-xl flex flex-col justify-center gap-8">
+                        <div className="flex items-center gap-5">
+                           <div className="p-3 bg-primary-600 rounded-2xl shrink-0"><Users size={24} /></div>
+                           <div className="flex flex-col">
+                              <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5">Guest Protocol</div>
+                              <div className="text-lg lg:text-xl font-black uppercase text-primary-400 leading-none">{room.capacity} Maximum</div>
                            </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                           <div className="p-3 bg-indigo-600 rounded-2xl"><BedDouble size={24} /></div>
-                           <div>
-                              <div className="text-[10px] font-black uppercase tracking-widest opacity-60">Core Configuration</div>
-                              <div className="text-xl font-black uppercase text-indigo-400">{room.bedType}</div>
+                        <div className="flex items-center gap-5">
+                           <div className="p-3 bg-indigo-600 rounded-2xl shrink-0"><BedDouble size={24} /></div>
+                           <div className="flex flex-col">
+                              <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5">Core Configuration</div>
+                              <div className="text-lg lg:text-xl font-black uppercase text-indigo-400 leading-none">{room.bedType}</div>
                            </div>
                         </div>
                      </div>
@@ -232,12 +232,12 @@ const Booking = () => {
                   <div className="bg-white/5 p-10 rounded-[2.5rem] border border-white/10 space-y-6 animate-fade-in-up">
                     <div className="flex justify-between items-center text-slate-500 font-bold uppercase tracking-widest text-[9px]">
                       <span>Dynamic Valuation</span>
-                      <span className="text-white">${room.price} x {days} Units</span>
+                      <span className="text-white">₹{room.price} x {days} Units</span>
                     </div>
                     <div className="flex justify-between items-end pt-8 border-t border-white/10">
                       <div>
                          <span className="text-primary-400 font-black uppercase tracking-[0.2em] text-[10px] block mb-1">Total Due</span>
-                         <span className="text-6xl font-black text-white tracking-tighter">${total}</span>
+                         <span className="text-6xl font-black text-white tracking-tighter">₹{total}</span>
                       </div>
                       <div className="p-4 bg-primary-600/20 text-primary-400 rounded-2xl animate-pulse">
                          <Star size={24} />
