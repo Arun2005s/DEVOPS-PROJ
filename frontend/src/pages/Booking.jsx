@@ -144,16 +144,16 @@ const Booking = () => {
                      <div className="lg:w-1/3 bg-slate-900 p-8 lg:p-10 rounded-[3rem] text-white shadow-xl flex flex-col justify-center gap-8">
                         <div className="flex items-center gap-5">
                            <div className="p-3 bg-primary-600 rounded-2xl shrink-0"><Users size={24} /></div>
-                           <div className="flex flex-col">
-                              <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5">Guest Protocol</div>
-                              <div className="text-lg lg:text-xl font-black uppercase text-primary-400 leading-none">{room.capacity} Maximum</div>
+                           <div className="flex flex-col min-w-0">
+                              <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5 truncate">Guest Protocol</div>
+                              <div className="text-base lg:text-lg font-black uppercase text-primary-400 leading-none truncate">{room.capacity} Maximum</div>
                            </div>
                         </div>
                         <div className="flex items-center gap-5">
                            <div className="p-3 bg-indigo-600 rounded-2xl shrink-0"><BedDouble size={24} /></div>
-                           <div className="flex flex-col">
-                              <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5">Core Configuration</div>
-                              <div className="text-lg lg:text-xl font-black uppercase text-indigo-400 leading-none">{room.bedType}</div>
+                           <div className="flex flex-col min-w-0">
+                              <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5 truncate">Core Configuration</div>
+                              <div className="text-base lg:text-lg font-black uppercase text-indigo-400 leading-none truncate">{room.bedType}</div>
                            </div>
                         </div>
                      </div>

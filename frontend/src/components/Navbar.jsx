@@ -28,10 +28,13 @@ const Navbar = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
+  const isNotHome = location.pathname !== '/';
+  const shouldShowBg = isScrolled || isNotHome;
+
   return (
     <nav className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-      isScrolled ? "py-3 bg-white/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50" : "py-6 bg-transparent"
+      shouldShowBg ? "py-3 bg-white/90 backdrop-blur-xl shadow-lg border-b border-gray-200/50" : "py-6 bg-transparent"
     )}>
       <div className="container mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
@@ -41,7 +44,7 @@ const Navbar = () => {
           </div>
           <span className={cn(
             "text-2xl font-black tracking-tighter transition-colors",
-            isScrolled ? "text-gray-900" : "text-white"
+            shouldShowBg ? "text-gray-900" : "text-white"
           )}>
             Hotel<span className="text-primary-600">Ease</span>
           </span>
@@ -56,7 +59,7 @@ const Navbar = () => {
                 to={link.path} 
                 className={cn(
                   "font-bold text-sm uppercase tracking-widest hover:text-primary-600 transition-all relative group",
-                  isScrolled ? "text-gray-600" : "text-white/90",
+                  shouldShowBg ? "text-gray-600" : "text-white/90",
                   location.pathname === link.path && "text-primary-600"
                 )}
               >
@@ -75,7 +78,7 @@ const Navbar = () => {
             <div className="flex items-center gap-6">
               <Link to="/dashboard" className={cn(
                 "flex items-center gap-2 font-bold text-sm tracking-wide group",
-                isScrolled ? "text-gray-700" : "text-white"
+                shouldShowBg ? "text-gray-700" : "text-white"
               )}>
                 <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary-600 to-primary-400 flex items-center justify-center text-white shadow-md group-hover:ring-4 ring-primary-100 transition-all">
                   <User size={20} />
@@ -94,7 +97,7 @@ const Navbar = () => {
             <div className="flex gap-4">
               <Link to="/login" className={cn(
                 "px-6 py-2.5 rounded-full text-sm font-bold transition-all border",
-                isScrolled 
+                shouldShowBg 
                   ? "text-gray-700 border-gray-200 hover:bg-gray-50" 
                   : "text-white border-white/20 hover:bg-white/10 backdrop-blur-sm"
               )}>

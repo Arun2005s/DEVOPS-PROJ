@@ -18,7 +18,7 @@ const Gallery = () => {
   ];
 
   return (
-    <div className="bg-slate-50 min-h-screen pt-32 pb-24">
+    <div className="bg-slate-50 min-h-screen pt-40 pb-24">
       <div className="container mx-auto px-6 max-w-7xl">
         
         {/* Header Section */}

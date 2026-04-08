@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=90"
@@ -50,7 +50,7 @@ const Home = () => {
       </section>
 
       {/* Featured Statistics */}
-      <section className="-mt-16 relative z-20 px-6 container mx-auto">
+      <section className="-mt-20 relative z-20 px-6 container mx-auto mb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200 border border-white bg-white/70 backdrop-blur-2xl">
            <StatItem label="Active Members" value="25,000+" />
            <StatItem label="Global Locations" value="120+" />
