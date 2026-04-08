@@ -18,6 +18,7 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('bookings'); // 'bookings' or 'rooms'
   const [bookings, setBookings] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const [gallery, setGallery] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -35,6 +36,15 @@ const Dashboard = () => {
     images: ''
   });
 
+  const [showGalleryModal, setShowGalleryModal] = useState(false);
+  const [galleryForm, setGalleryForm] = useState({
+    title: '',
+    category: 'Architecture',
+    roomId: '',
+    images: []
+  });
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
     fetchData();
   }, [user, activeTab]);
@@ -46,9 +56,12 @@ const Dashboard = () => {
         const endpoint = user?.role === 'admin' ? '/api/bookings' : '/api/bookings/mybookings';
         const { data } = await API.get(endpoint);
         setBookings(data);
-      } else if (user?.role === 'admin') {
+      } else if (activeTab === 'rooms' && user?.role === 'admin') {
         const { data } = await API.get('/api/rooms');
         setRooms(data);
+      } else if (activeTab === 'gallery' && user?.role === 'admin') {
+        const { data } = await API.get('/api/gallery');
+        setGallery(data);
       }
     } catch (error) {
       console.error('Error fetching data', error);
@@ -87,6 +100,46 @@ const Dashboard = () => {
     }
   };
 
+  const handleUploadGallery = async (e) => {
+    e.preventDefault();
+    if (galleryForm.images.length === 0) return alert('Select at least one visual asset.');
+    if (!galleryForm.roomId) return alert('Select a room for integration.');
+    
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      Array.from(galleryForm.images).forEach(file => {
+        formData.append('images', file);
+      });
+      formData.append('title', galleryForm.title);
+      formData.append('category', galleryForm.category);
+      formData.append('roomId', galleryForm.roomId);
+
+      await API.post('/api/gallery/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      setShowGalleryModal(false);
+      setGalleryForm({ title: '', category: 'Architecture', roomId: '', images: [] });
+      fetchData();
+    } catch (error) {
+      alert('Asset integration failed. Protocol termination.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteGallery = async (id) => {
+    if (window.confirm('Decommission this visual record?')) {
+      try {
+        await API.delete(`/api/gallery/${id}`);
+        fetchData();
+      } catch (error) {
+        alert('Decommissioning failed.');
+      }
+    }
+  };
+
   if (loading && bookings.length === 0 && rooms.length === 0) return (
     <div className="flex flex-col gap-6 justify-center items-center h-screen bg-slate-50">
        <div className="w-16 h-16 border-4 border-primary-100 border-t-primary-600 rounded-full animate-spin" />
@@ -96,7 +149,9 @@ const Dashboard = () => {
 
   const filteredData = activeTab === 'bookings' 
     ? bookings.filter(b => b.roomId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || b.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
-    : rooms.filter(r => r.name?.toLowerCase().includes(searchTerm.toLowerCase()) || r.location?.toLowerCase().includes(searchTerm.toLowerCase()));
+    : activeTab === 'rooms' 
+    ? rooms.filter(r => r.name?.toLowerCase().includes(searchTerm.toLowerCase()) || r.location?.toLowerCase().includes(searchTerm.toLowerCase()))
+    : gallery.filter(g => g.title?.toLowerCase().includes(searchTerm.toLowerCase()) || g.category?.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="bg-slate-50 min-h-screen pt-32 pb-24">
@@ -126,7 +181,7 @@ const Dashboard = () => {
 
            <div className="relative z-10 w-full md:w-fit bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl flex flex-col items-center md:items-end gap-2 text-white">
               <span className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Archive Total</span>
-              <span className="text-6xl font-black">{activeTab === 'bookings' ? bookings.length : rooms.length}</span>
+              <span className="text-6xl font-black">{activeTab === 'bookings' ? bookings.length : activeTab === 'rooms' ? rooms.length : gallery.length}</span>
            </div>
         </div>
 
@@ -145,7 +200,14 @@ const Dashboard = () => {
                 className={cn("flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all", 
                 activeTab === 'rooms' ? "bg-slate-900 text-white shadow-xl" : "text-slate-400 hover:text-slate-900")}
              >
-                <Settings size={18} /> Room Management
+                <Settings size={18} /> Rooms
+             </button>
+             <button 
+                onClick={() => setActiveTab('gallery')}
+                className={cn("flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all", 
+                activeTab === 'gallery' ? "bg-slate-900 text-white shadow-xl" : "text-slate-400 hover:text-slate-900")}
+             >
+                <ImageIcon size={18} /> Gallery
              </button>
           </div>
         )}
@@ -154,9 +216,9 @@ const Dashboard = () => {
         <div className="flex flex-col lg:flex-row justify-between items-center mb-10 gap-8">
            <div className="flex items-center gap-4">
               <div className="bg-slate-900 p-3 rounded-2xl text-white shadow-xl">
-                 {activeTab === 'bookings' ? <Briefcase size={24} /> : <BedDouble size={24} />}
+                 {activeTab === 'bookings' ? <Briefcase size={24} /> : activeTab === 'rooms' ? <BedDouble size={24} /> : <ImageIcon size={24} />}
               </div>
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Central <span className="text-primary-600">{activeTab === 'bookings' ? 'Archive' : 'Inventory'}</span></h2>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Central <span className="text-primary-600">{activeTab === 'bookings' ? 'Archive' : activeTab === 'rooms' ? 'Inventory' : 'Assets'}</span></h2>
            </div>
 
            <div className="flex items-center gap-6 w-full lg:w-fit">
@@ -178,6 +240,14 @@ const Dashboard = () => {
                    <Plus size={24} strokeWidth={3} />
                 </button>
               )}
+              {activeTab === 'gallery' && (
+                <button 
+                  onClick={() => setShowGalleryModal(true)}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white p-5 rounded-full shadow-2xl shadow-indigo-900/40 hover:-translate-y-2 transition-all active:scale-95"
+                >
+                   <Plus size={24} strokeWidth={3} />
+                </button>
+              )}
            </div>
         </div>
 
@@ -185,8 +255,10 @@ const Dashboard = () => {
         <div className="bg-white rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.02)] border border-slate-100 overflow-hidden">
            {activeTab === 'bookings' ? (
               <BookingTable data={filteredData} user={user} />
-           ) : (
+           ) : activeTab === 'rooms' ? (
               <RoomTable data={filteredData} onDelete={handleDeleteRoom} />
+           ) : (
+              <GalleryTable data={filteredData} onDelete={handleDeleteGallery} />
            )}
         </div>
       </div>
@@ -225,6 +297,69 @@ const Dashboard = () => {
                           Establish Entry
                        </button>
                     </div>
+                 </form>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* Gallery Upload Modal */}
+      {showGalleryModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 lg:p-12">
+           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" onClick={() => setShowGalleryModal(false)} />
+           <div className="bg-white w-full max-w-xl rounded-[4rem] shadow-2xl relative z-10 overflow-hidden flex flex-col">
+              <div className="p-10 lg:p-16 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                 <div>
+                    <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Capture <span className="text-indigo-600">Asset</span></h2>
+                    <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Visual Integration</p>
+                 </div>
+                 <button onClick={() => setShowGalleryModal(false)} className="p-4 bg-white rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all text-slate-400 hover:text-slate-900">
+                    <X size={24} />
+                 </button>
+              </div>
+              
+              <div className="p-10 lg:p-16">
+                 <form onSubmit={handleUploadGallery} className="space-y-10">
+                    <InputField label="Visual Label / Title" placeholder="e.g. Sunset Terrace" value={galleryForm.title} onChange={(v) => setGalleryForm({...galleryForm, title: v})} />
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                       <SelectField label="Asset Classification" options={['Architecture', 'Interior', 'Leisure', 'Culinary', 'Business']} value={galleryForm.category} onChange={(v) => setGalleryForm({...galleryForm, category: v})} />
+                       <div className="space-y-3">
+                          <label className="block text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Target Hotel / Room</label>
+                          <select 
+                            value={galleryForm.roomId}
+                            onChange={(e) => setGalleryForm({...galleryForm, roomId: e.target.value})}
+                            className="w-full px-8 py-5 border border-slate-100 bg-white shadow-sm rounded-2xl outline-none focus:ring-4 focus:ring-primary-600/10 transition-all font-black text-slate-900 uppercase tracking-widest text-xs"
+                          >
+                            <option value="">Select Target...</option>
+                            {rooms.map(room => (
+                              <option key={room._id} value={room._id}>{room.name} ({room.location})</option>
+                            ))}
+                          </select>
+                       </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                       <label className="block text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">Source Binaries / Images (Max 10)</label>
+                       <input 
+                         type="file" 
+                         multiple
+                         accept="image/*"
+                         onChange={(e) => setGalleryForm({...galleryForm, images: e.target.files})}
+                         className="w-full px-8 py-5 border border-slate-100 bg-slate-50 shadow-sm rounded-2xl outline-none focus:ring-4 focus:ring-indigo-600/10 transition-all font-bold text-slate-400 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
+                       />
+                       {galleryForm.images?.length > 0 && (
+                         <div className="text-[9px] font-black text-emerald-600 uppercase tracking-widest px-4">{galleryForm.images.length} Assets Selected</div>
+                       )}
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      disabled={uploading}
+                      className={cn("w-full py-8 text-white rounded-3xl font-black text-xl uppercase tracking-widest shadow-2xl transition-all hover:-translate-y-2 active:scale-95", uploading ? "bg-slate-300 animate-pulse" : "bg-indigo-600 hover:bg-slate-900")}
+                    >
+                       {uploading ? 'Processing Protocol...' : 'Establish Visual Records'}
+                    </button>
                  </form>
               </div>
            </div>
@@ -379,6 +514,51 @@ const SelectField = ({ label, options, value, onChange }) => (
     >
       {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
     </select>
+  </div>
+);
+
+const GalleryTable = ({ data, onDelete }) => (
+  <div className="overflow-x-auto">
+    <table className="w-full text-left">
+      <thead>
+        <tr className="bg-slate-50 text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">
+          <th className="px-12 py-8">Visual Asset / Metadata</th>
+          <th className="px-12 py-8">Classification</th>
+          <th className="px-12 py-8">Temporal ID</th>
+          <th className="px-12 py-8">Actions</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-slate-50">
+        {data.map((img) => (
+          <tr key={img._id} className="group hover:bg-slate-50/50 transition-all duration-300">
+            <td className="px-12 py-10">
+               <div className="flex items-center gap-8">
+                  <div className="w-32 h-20 rounded-3xl overflow-hidden shadow-xl border border-white flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
+                     <img src={img.url} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                     <div className="font-black text-slate-900 text-xl tracking-tighter uppercase mb-1">{img.title}</div>
+                     <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest">{img.public_id}</div>
+                  </div>
+               </div>
+            </td>
+            <td className="px-12 py-10">
+               <span className="bg-indigo-50 text-indigo-600 px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border border-indigo-100">{img.category}</span>
+            </td>
+            <td className="px-12 py-10">
+               <div className="text-slate-900 font-bold text-sm tracking-tight">{new Date(img.createdAt).toLocaleDateString()}</div>
+               <span className="text-slate-400 font-black uppercase tracking-widest text-[9px]">Entry Date</span>
+            </td>
+            <td className="px-12 py-10">
+               <button onClick={() => onDelete(img._id)} className="p-4 bg-red-50 text-red-600 rounded-2xl hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                  <Trash2 size={20} />
+               </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {data.length === 0 && <EmptyState />}
   </div>
 );
 
