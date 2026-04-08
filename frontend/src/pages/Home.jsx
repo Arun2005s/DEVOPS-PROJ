@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-40">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=90"
