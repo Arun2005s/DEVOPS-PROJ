@@ -108,12 +108,14 @@ const Dashboard = () => {
     setUploading(true);
     try {
       const formData = new FormData();
+      // Append fields BEFORE files
+      formData.append('roomId', galleryForm.roomId);
+      formData.append('title', galleryForm.title);
+      formData.append('category', galleryForm.category);
+      
       Array.from(galleryForm.images).forEach(file => {
         formData.append('images', file);
       });
-      formData.append('title', galleryForm.title);
-      formData.append('category', galleryForm.category);
-      formData.append('roomId', galleryForm.roomId);
 
       await API.post('/api/gallery/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
