@@ -45,9 +45,9 @@ const Contact = () => {
            {/* Info Section */}
            <div className="space-y-16">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                 <ContactInfo icon={<Mail className="text-primary-600" />} label="Digital Mail" value="support@hotelease.io" />
-                 <ContactInfo icon={<Phone className="text-emerald-600" />} label="Secure Line" value="+1 (555) NEURAL-0" />
-                 <ContactInfo icon={<MapPin className="text-indigo-600" />} label="Headquarters" value="District 9, Cyber City" />
+                 <ContactInfo icon={<Mail className="text-primary-600" />} label="Digital Mail" value="arunrealm2005@gmail.com" />
+                 <ContactInfo icon={<Phone className="text-emerald-600" />} label="Secure Line" value="+91 9345309926" />
+                 <ContactInfo icon={<MapPin className="text-indigo-600" />} label="Headquarters" value="Erode" />
                  <ContactInfo icon={<Clock className="text-amber-600" />} label="Active Status" value="24/7 Response Time" />
               </div>
 
