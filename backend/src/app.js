@@ -9,6 +9,23 @@ const galleryRoutes = require('./routes/galleryRoutes');
 
 dotenv.config();
 
+// Environment Variable Validation
+const requiredEnvVars = [
+  'JWT_SECRET',
+  'CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_API_KEY',
+  'CLOUDINARY_API_SECRET'
+];
+
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingEnvVars.length > 0) {
+  console.error('ERROR: Missing required environment variables:');
+  missingEnvVars.forEach(varName => console.error(` - ${varName}`));
+  console.error('\nPlease provide these variables via your .env file or docker -e flags.');
+  process.exit(1);
+}
+
 const app = express();
 
 // Middleware
