@@ -22,9 +22,15 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/gallery', galleryRoutes);
 
 // Database Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/hotelease')
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log(err));
+const dbURI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/hotelease';
+console.log(`Connecting to MongoDB at: ${dbURI.replace(/:([^:@]+)@/, ':****@')}`); // Mask password if present
+
+mongoose.connect(dbURI)
+  .then(() => console.log('MongoDB Connected successfully'))
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1); // Exit if connection fails to make it obvious in logs
+  });
 
 const PORT = process.env.PORT || 5000;
 
